@@ -15187,7 +15187,7 @@ export const MODELS = {
 			baseUrl: "https://api.pinference.ai/api/v1",
 			compat: {"supportsStore":false,"supportsDeveloperRole":false,"supportsReasoningEffort":true,"maxTokensField":"max_tokens","supportsStrictMode":false,"requiresReasoningContentOnAssistantMessages":true,"thinkingFormat":"deepseek"},
 			reasoning: true,
-			thinkingLevelMap: {"minimal":null,"low":null,"medium":null,"high":"high","xhigh":"max"},
+			thinkingLevelMap: {"minimal":null,"low":null,"medium":null,"high":"high","xhigh":"max","max":null},
 			input: ["text"],
 			cost: {
 				input: 0.14,
@@ -16227,8 +16227,9 @@ export const MODELS = {
 			api: "openai-completions",
 			provider: "prime-inference",
 			baseUrl: "https://api.pinference.ai/api/v1",
-			compat: {"supportsStore":false,"supportsDeveloperRole":false,"supportsReasoningEffort":true,"maxTokensField":"max_tokens","supportsStrictMode":false},
+			compat: {"supportsStore":false,"supportsDeveloperRole":false,"supportsReasoningEffort":false,"maxTokensField":"max_tokens","supportsStrictMode":false,"thinkingFormat":"openrouter"},
 			reasoning: true,
+			thinkingLevelMap: {"minimal":null,"low":null,"medium":null,"high":"high","xhigh":null,"max":null},
 			input: ["text"],
 			cost: {
 				input: 0.1,
@@ -16245,8 +16246,9 @@ export const MODELS = {
 			api: "openai-completions",
 			provider: "prime-inference",
 			baseUrl: "https://api.pinference.ai/api/v1",
-			compat: {"supportsStore":false,"supportsDeveloperRole":false,"supportsReasoningEffort":true,"maxTokensField":"max_tokens","supportsStrictMode":false},
+			compat: {"supportsStore":false,"supportsDeveloperRole":false,"supportsReasoningEffort":false,"maxTokensField":"max_tokens","supportsStrictMode":false,"thinkingFormat":"openrouter"},
 			reasoning: true,
+			thinkingLevelMap: {"minimal":null,"low":null,"medium":null,"high":"high","xhigh":null,"max":null},
 			input: ["text"],
 			cost: {
 				input: 0.065,
@@ -16546,6 +16548,7 @@ export const MODELS = {
 			baseUrl: "https://api.pinference.ai/api/v1",
 			compat: {"supportsStore":false,"supportsDeveloperRole":false,"supportsReasoningEffort":true,"maxTokensField":"max_tokens","supportsStrictMode":false},
 			reasoning: true,
+			thinkingLevelMap: {"off":null,"minimal":"minimal","low":"low","medium":"medium","high":"high","xhigh":"xhigh","max":null},
 			input: ["text", "image"],
 			cost: {
 				input: 2,

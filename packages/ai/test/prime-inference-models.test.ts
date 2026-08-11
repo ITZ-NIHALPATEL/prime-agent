@@ -63,6 +63,22 @@ describe("Prime Inference models", () => {
 		expect(getModel("prime-inference", "openai/gpt-4o").featured).toBeUndefined();
 	});
 
+	it("uses mandatory provider efforts for Qwen 3.8 Max", () => {
+		const model = getModel("prime-inference", "qwen/qwen3.8-max");
+
+		expect(model.featured).toBe(true);
+		expect(model.thinkingLevelMap).toEqual({
+			off: null,
+			minimal: "minimal",
+			low: "low",
+			medium: "medium",
+			high: "high",
+			xhigh: "xhigh",
+			max: null,
+		});
+		expect(getSupportedThinkingLevels(model)).toEqual(["minimal", "low", "medium", "high", "xhigh"]);
+	});
+
 	it("uses reasoning toggles for models without effort selectors", () => {
 		for (const provider of ["prime-inference", "openrouter"] as const) {
 			const model = getModel(provider, "qwen/qwen3.7-flash");
