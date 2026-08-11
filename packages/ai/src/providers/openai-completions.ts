@@ -599,10 +599,10 @@ function buildParams(
 	} else if (options?.reasoningEffort && model.reasoning && compat.supportsReasoningEffort) {
 		// OpenAI-style reasoning_effort
 		(params as any).reasoning_effort = model.thinkingLevelMap?.[options.reasoningEffort] ?? options.reasoningEffort;
-	} else if (!options?.reasoningEffort && model.reasoning && compat.supportsReasoningEffort) {
+	} else if (options?.reasoningEnabled === false && model.reasoning && compat.supportsReasoningEffort) {
 		const offValue = model.thinkingLevelMap?.off;
-		if (typeof offValue === "string") {
-			(params as any).reasoning_effort = offValue;
+		if (offValue !== null) {
+			(params as any).reasoning_effort = offValue ?? "none";
 		}
 	}
 
