@@ -2,6 +2,7 @@
  * Minimal TUI implementation with differential rendering
  */
 
+import { execFile } from "node:child_process";
 import * as fs from "node:fs";
 import * as os from "node:os";
 import * as path from "node:path";
@@ -313,6 +314,8 @@ export class TUI extends Container {
 	public onDebug?: () => void;
 	/** Copies fullscreen mouse selections; when unset, OSC 52 is written directly. */
 	public onCopy?: (text: string) => void;
+	/** Opens hyperlinks clicked in the fullscreen viewport; when unset, the platform opener is used. */
+	public onOpenUrl?: (url: string) => void;
 	private renderRequested = false;
 	private renderTimer: NodeJS.Timeout | undefined;
 	private lastRenderAt = 0;
@@ -751,6 +754,28 @@ export class TUI extends Container {
 		return this.fullscreen?.viewport.scrollInfo() ?? null;
 	}
 
+	// Terminals gate their native link handling while mouse reporting is active
+	// (Ghostty only refreshes link hover when reporting is off or shift is held),
+	// so clicks the TUI consumes must open OSC 8 hyperlinks itself.
+	private openHyperlink(url: string): void {
+		if (!/^https?:\/\//i.test(url)) return;
+		if (this.onOpenUrl) {
+			this.onOpenUrl(url);
+			return;
+		}
+		const [command, ...args] =
+			process.platform === "darwin"
+				? ["open", url]
+				: process.platform === "win32"
+					? [
+							path.win32.join(process.env.SystemRoot ?? "C:\\Windows", "System32", "rundll32.exe"),
+							"url.dll,FileProtocolHandler",
+							url,
+						]
+					: ["xdg-open", url];
+		execFile(command, args, () => {});
+	}
+
 	private copySelection(text: string): void {
 		if (this.onCopy) {
 			this.onCopy(text);
@@ -918,6 +943,10 @@ export class TUI extends Container {
 				} else if (!event.press) {
 					this.stopSelectionAutoScroll();
 					viewport.clearSelection();
+					if (event.button === MOUSE_BUTTON_LEFT && !event.motion) {
+						const url = viewport.hyperlinkAt(event.y - 1, event.x - 1);
+						if (url) this.openHyperlink(url);
+					}
 				}
 			} else if (event && overlayFocused) {
 				this.stopSelectionAutoScroll();
@@ -936,6 +965,10 @@ export class TUI extends Container {
 					this.requestRender();
 				} else if (!event.press) {
 					viewport.clearSelection();
+					if (event.button === MOUSE_BUTTON_LEFT && !event.motion) {
+						const url = viewport.hyperlinkAt(event.y - 1, event.x - 1);
+						if (url) this.openHyperlink(url);
+					}
 				}
 			}
 			return true;
